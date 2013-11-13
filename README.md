@@ -1,4 +1,4 @@
 mos
 ===
 
-MOS - Minimalistic Operating System
+MOS - Minimalist Operating System
