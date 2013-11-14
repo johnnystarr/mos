@@ -8,6 +8,10 @@
 ; Created by Johnny Starr (c) 2013
 ; www.thestarrlab.com
 
+; io.asm:
+; This file stores all of the I/O (Input Output) library routines
+
+
 ; mos_io_print_string() - Prints a string to output
 ; IN: SI = String to output
 ; OUT: none
