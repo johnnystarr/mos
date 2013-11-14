@@ -14,12 +14,14 @@
 ; the main output of this file will be .COM and be used in a DOS env.
 
 org 100h     ; all COM files start in this location in DOS
+jmp start
 
 %INCLUDE "lib/string.asm"
 %INCLUDE "lib/io.asm"
 
-
-
-
-
+start:
+	mov si, str
+	call mos_io_print_string
 ret
+
+str: db "Hey, It's really working!!!", 0
