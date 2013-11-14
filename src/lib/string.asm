@@ -31,7 +31,6 @@ mos_string_isprefix:
 	stc
 	popa
 	ret
-ret
 
 ; mos_string_len() returns the length of a string
 ; IN: SI = string
