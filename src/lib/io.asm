@@ -13,14 +13,14 @@
 ; OUT: none
 ; TODO: add features for pages and colors
 mos_io_print_string:
-	pusha
+	pusha            ; preserve registers
 .do:
-	lodsb
-	cmp al, 0
-	je .done
-	mov ah, 0Eh
-	int 10h
-	jmp .do
+	lodsb            ; loads next byte into AL from SI, auto increments SI
+	cmp al, 0        ; are we at the end of our string?
+	je .done         ; if so, leave
+	mov ah, 0Eh      ; setup AH with BIOS Int 0Eh (print char to screen)
+	int 10h          ; call BIOS Int
+	jmp .do          ; loop
 .done:
-	popa
-	ret
+	popa             ; restore registers, we aren't outputting a value
+	ret              ; return
