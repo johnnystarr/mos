@@ -31,7 +31,7 @@ start:
     call mos_string_len
         
     mov ah, 02h    
-    int 21h
+    int 21h              ; call DOS interrupt for testing
 ret
 
 str: db "abcdfghijk", 0
