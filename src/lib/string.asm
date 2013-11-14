@@ -8,8 +8,8 @@
 ; Created by Johnny Starr (c) 2013
 ; www.thestarrlab.com
 
-; isprefix() determines if string '1' is a prefix of string '2'
-; IN: SI = string 1, DI = string 2
+; mos_string_isprefix() determines if str1 is a prefix of str2
+; IN: SI = str1, DI = str2
 ; OUT: Carry Flag set if true
 mos_string_isprefix:
 	pusha             ; preserve registers
