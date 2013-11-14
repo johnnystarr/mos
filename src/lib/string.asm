@@ -12,25 +12,25 @@
 ; IN: SI = string 1, DI = string 2
 ; OUT: Carry Flag set if true
 mos_string_isprefix:
-	pusha
+	pusha             ; preserve registers
 .more:
-	mov al, [si]
-	mov bl, [di]
-	cmp al, bl
-	jne .not
-	inc si
-	inc di
-	cmp [si], byte 0
-	jne .more
-	jmp .is
+	mov al, [si]      ; grab char from str1
+	mov bl, [di]      ; grab char from str2
+	cmp al, bl        ; compare the two
+	jne .not          ; does it match?
+	inc si            ; increment str1
+	inc di            ; increment str2
+	cmp [si], byte 0  ; are we at the end of str1?
+	jne .more         ; loop
+	jmp .is           ; it is a prefix
 .not:
-	clc
-	popa
-	ret
+	clc               ; clear carry flag (false)
+	popa              ; restore registers
+	ret               ; return
 .is:
-	stc
-	popa
-	ret
+	stc               ; set carry flag (true)
+	popa              ; restore registers
+	ret               ; return
 
 ; mos_string_len() returns the length of a string
 ; IN: SI = string
