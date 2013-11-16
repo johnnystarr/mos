@@ -28,3 +28,12 @@ mos_io_print_string:
 .done:
 	popa             ; restore registers, we aren't outputting a value
 	ret              ; return
+
+
+; mos_io_read_string() - Reads a string from input
+
+mos_io_read_string:
+	
+
+
+ret
