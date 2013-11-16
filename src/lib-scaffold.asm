@@ -20,8 +20,20 @@ jmp start
 %INCLUDE "lib/io.asm"
 
 start:
+	; test mos_string_isprefix
+
+	mov si, pre
+	mov di, str
+	call mos_string_isprefix
+	jc .is_prefix
+	jmp .done
+
+.is_prefix:
 	mov si, str
 	call mos_io_print_string
-ret
+.done:
+	ret
 
+pre: db "He", 0
 str: db "Hey, It's really working!!!", 0
+
