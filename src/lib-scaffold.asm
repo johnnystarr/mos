@@ -8,7 +8,7 @@ jmp start
 
 start:
 	mov si, str
-	call mos_io_print_string
+	call MOS_IO_PRINT_STRING
 ret
 
 str: db "It's working!", 0
