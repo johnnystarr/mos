@@ -13,6 +13,7 @@
 ;  IN: SI = str1, DI = str2
 ;  OUT: Carry Flag set if true
 ;-------------------------------------------------------------------------
+
 MOS_STRING_ISPREFIX:
 				PUSHA					; preserve registers
 .MORE:			MOV 	al, [si]		; grab char from str1
@@ -30,11 +31,13 @@ MOS_STRING_ISPREFIX:
 .IS:			STC						; set carry flag (true)
 				POPA					; restore registers
 				RET						; return
+
 ;-------------------------------------------------------------------------
 ;  MOS_STRING_LEN() returns the length of a string
 ;  IN: SI = string
 ;  OUT: DX = length
 ;-------------------------------------------------------------------------
+
 MOS_STRING_LEN:		
 				MOV		DX, 0			; start off count at 0
 .COUNT:			CMP		[SI], BYTE 0	; at the end of the string?
@@ -43,3 +46,7 @@ MOS_STRING_LEN:
 				INC		SI				; move to next character
 				JMP		.COUNT			; loop
 .DONE:			RET						; return
+
+;-------------------------------------------------------------------------
+;  End Of File
+;-------------------------------------------------------------------------
