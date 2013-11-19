@@ -16,13 +16,13 @@
 
 MOS_STRING_ISPREFIX:
 				PUSHA					; preserve registers
-.MORE:			MOV 	al, [si]		; grab char from str1
-				MOV 	bl, [di]		; grab char from str2
-				CMP 	al, bl			; compare the two
+.MORE:			MOV 	AL, [SI]		; grab char from str1
+				MOV 	BL, [DI]		; grab char from str2
+				CMP 	AL, BL			; compare the two
 				JNE 	.NOT			; does it match?
-				INC 	si				; increment str1
-				INC 	di				; increment str2
-				CMP 	[si], BYTE 0	; are we at the end of str1?
+				INC 	SI				; increment str1
+				INC 	DI				; increment str2
+				CMP 	[SI], BYTE 0	; are we at the end of str1?
 				JNE 	.MORE			; loop
 				JMP 	.IS				; it is a prefix
 .NOT:			CLC						; clear carry flag (false)

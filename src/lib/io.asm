@@ -12,6 +12,17 @@
 ; This file stores all of the I/O (Input Output) library routines
 
 ;-------------------------------------------------------------------------
+;  MOS_IO_PRINT_CHAR() - Prints a single character to output
+;  IN: AL = char to output
+;  OUT: none
+;-------------------------------------------------------------------------
+
+MOS_IO_PRINT_CHAR:
+				MOV		AH, 0Eh			; BIOS (output char) Int
+				INT		10h				; call BIOS Int
+				RET
+				
+;-------------------------------------------------------------------------
 ;  MOS_IO_PRINT_STRING() - Prints a string to output
 ;  IN: SI = String to output
 ;  OUT: none
@@ -31,13 +42,15 @@ MOS_IO_PRINT_STRING:
 
 ;-------------------------------------------------------------------------
 ;  MOS_IO_READ_STRING() - Reads a string from input
+;  IN: none
+;  OUT: AL = char input
+;  TODO: complete by reading whole string  and returning pointer to str
 ;-------------------------------------------------------------------------
 
 MOS_IO_READ_STRING:
-	
-
-
-RET
+				MOV		AH, 00h			; setup for read keyboard input
+				INT		16h				; call BIOS keyboard service		
+				RET
 
 ;-------------------------------------------------------------------------
 ;  End Of File

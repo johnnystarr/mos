@@ -7,8 +7,8 @@ jmp start
 %INCLUDE "lib/string.asm"
 
 start:
-	mov si, str
-	call MOS_IO_PRINT_STRING
+	call MOS_IO_READ_STRING
+	call MOS_IO_PRINT_CHAR
 ret
 
 str: db "It's working!", 0
