@@ -11,29 +11,58 @@
 ; io.asm:
 ; This file stores all of the I/O (Input Output) library routines
 
+;-------------------------------------------------------------------------
+;  MOS_IO_PRINT_CHAR() - Prints a single character to output
+;  IN: AL = char to output
+;  OUT: none
+;-------------------------------------------------------------------------
 
-; mos_io_print_string() - Prints a string to output
-; IN: SI = String to output
-; OUT: none
-; TODO: add features for pages and colors
-mos_io_print_string:
-	pusha            ; preserve registers
-.do:
-	lodsb            ; loads next byte into AL from SI, auto increments SI
-	cmp al, 0        ; are we at the end of our string?
-	je .done         ; if so, leave
-	mov ah, 0Eh      ; setup AH with BIOS Int 0Eh (print char to screen)
-	int 10h          ; call BIOS Int
-	jmp .do          ; loop
-.done:
-	popa             ; restore registers, we aren't outputting a value
-	ret              ; return
+MOS_IO_PRINT_CHAR:
+			MOV		AH, 0Eh			; BIOS (output char) Int
+			INT		10h				; call BIOS Int
+			RET
+			
+;-------------------------------------------------------------------------
+;  MOS_IO_PRINT_STRING() - Prints a string to output
+;  IN: SI = String to output
+;  OUT: none
+;  TODO: add features for pages and colors
+;-------------------------------------------------------------------------
 
+MOS_IO_PRINT_STRING:
+			PUSHA					; preserve registers
+.DO:		LODSB            		; loads next byte to AL, (INC SI)
+			CMP 	AL, 0			; at the end of our string?
+			JE		.DONE         	; if so, leave
+			MOV		AH, 0Eh      	; BIOS (output char) Int
+			INT		10h          	; call BIOS Int
+			JMP		.DO          	; loop
+.DONE:		POPA             		; restore regs, no output
+			RET              		; return
 
-; mos_io_read_string() - Reads a string from input
+;-------------------------------------------------------------------------
+;  MOS_IO_READ_STRING() - Reads a string from input
+;  IN: DI = destination of input string
+;      DL = options flag: 0000000x = echo
+;                         xxxxxxx0 = unused yet
+;  OUT: AL = char input
+;  TODO: complete by reading whole string  and returning pointer to str
+;-------------------------------------------------------------------------
 
-mos_io_read_string:
-	
+MOS_IO_READ_STRING:
+.READ		MOV		AH, 00h				; setup for read keyboard input
+			INT		16h					; call BIOS keyboard service
+			STOSB						; store AL in str, inc DI
+			TEST	DL, 00000001b   	; check echo flag
+			JNE		.ECHO				; go to echo stage
+			JMP		.NOECHO				; bypass echo
+.ECHO		CALL	MOS_IO_PRINT_CHAR	; call API routine to echo
+.NOECHO		CMP		AL, 0Dh				; end of string? (enter pressed)
+			JNE		.READ				; if not, read more
+			DEC		DI					; if so, set us back one
+			MOV		[DI], BYTE 0		; terminate our string asciiz
+			RET							; return
 
-
-ret
+;-------------------------------------------------------------------------
+;  End Of File
+;-------------------------------------------------------------------------

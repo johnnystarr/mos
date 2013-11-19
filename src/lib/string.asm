@@ -8,40 +8,45 @@
 ; Created by Johnny Starr (c) 2013
 ; www.thestarrlab.com
 
-; mos_string_isprefix() determines if str1 is a prefix of str2
-; IN: SI = str1, DI = str2
-; OUT: Carry Flag set if true
-mos_string_isprefix:
-	pusha             ; preserve registers
-.more:
-	mov al, [si]      ; grab char from str1
-	mov bl, [di]      ; grab char from str2
-	cmp al, bl        ; compare the two
-	jne .not          ; does it match?
-	inc si            ; increment str1
-	inc di            ; increment str2
-	cmp [si], byte 0  ; are we at the end of str1?
-	jne .more         ; loop
-	jmp .is           ; it is a prefix
-.not:
-	clc               ; clear carry flag (false)
-	popa              ; restore registers
-	ret               ; return
-.is:
-	stc               ; set carry flag (true)
-	popa              ; restore registers
-	ret               ; return
+;-------------------------------------------------------------------------
+;  MOS_STRING_ISPREFIX() determines if str1 is a prefix of str2
+;  IN: SI = str1, DI = str2
+;  OUT: Carry Flag set if true
+;-------------------------------------------------------------------------
 
-; mos_string_len() returns the length of a string
-; IN: SI = string
-; OUT: DX = length
-mos_string_len:     
-	mov dx, 0         ; start off count at 0
-.count:            
-	cmp [si], byte 0  ; are we at the end of the string?	
-	je .done          ; if so, were done here
-	inc dx            ; otherwise: increment our count
-	inc si            ; move to next character
-	jmp .count        ; loop
-.done:               
-	ret               ; return
+MOS_STRING_ISPREFIX:
+			PUSHA					; preserve registers
+.MORE:		MOV 	AL, [SI]		; grab char from str1
+			MOV 	BL, [DI]		; grab char from str2
+			CMP 	AL, BL			; compare the two
+			JNE 	.NOT			; does it match?
+			INC 	SI				; increment str1
+			INC 	DI				; increment str2
+			CMP 	[SI], BYTE 0	; are we at the end of str1?
+			JNE 	.MORE			; loop
+			JMP 	.IS				; it is a prefix
+.NOT:		CLC						; clear carry flag (false)
+			POPA					; restore registers
+			RET						; return
+.IS:		STC						; set carry flag (true)
+			POPA					; restore registers
+			RET						; return
+
+;-------------------------------------------------------------------------
+;  MOS_STRING_LEN() returns the length of a string
+;  IN: SI = string
+;  OUT: DX = length
+;-------------------------------------------------------------------------
+
+MOS_STRING_LEN:		
+			MOV		DX, 0			; start off count at 0
+.COUNT:		CMP		[SI], BYTE 0	; at the end of the string?
+			JE		.DONE			; if so, were done here
+			INC		DX				; otherwise: increment our count
+			INC		SI				; move to next character
+			JMP		.COUNT			; loop
+.DONE:		RET						; return
+
+;-------------------------------------------------------------------------
+;  End Of File
+;-------------------------------------------------------------------------
