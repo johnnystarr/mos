@@ -42,15 +42,20 @@ MOS_IO_PRINT_STRING:
 
 ;-------------------------------------------------------------------------
 ;  MOS_IO_READ_STRING() - Reads a string from input
-;  IN: none
+;  IN: DI = destination of input string
 ;  OUT: AL = char input
 ;  TODO: complete by reading whole string  and returning pointer to str
 ;-------------------------------------------------------------------------
 
 MOS_IO_READ_STRING:
-				MOV		AH, 00h			; setup for read keyboard input
-				INT		16h				; call BIOS keyboard service		
-				RET
+.READ			MOV		AH, 00h			; setup for read keyboard input
+				INT		16h				; call BIOS keyboard service
+				STOSB					; store AL in str, inc DI
+				CMP		AL, 0Dh			; end of string? (enter pressed)
+				JNE		.READ			; if not, read more
+				DEC		DI				; if so, set us back one
+				MOV		[DI], BYTE 0	; terminate our string asciiz
+				RET						; return
 
 ;-------------------------------------------------------------------------
 ;  End Of File
