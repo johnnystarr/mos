@@ -12,7 +12,7 @@
 ;  mos_string_isprefix() determines if str1 is a prefix of str2
 ;  IN: SI = str1, DI = str2
 ;  OUT: Carry Flag set if true
-'-------------------------------------------------------------------------
+;-------------------------------------------------------------------------
 mos_string_isprefix:
 	pusha             ; preserve registers
 .more:
