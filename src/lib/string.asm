@@ -9,7 +9,7 @@
 ; www.thestarrlab.com
 
 ;-------------------------------------------------------------------------
-;  MOS_STRING_ISPREFIX() determines if str1 is a prefix of str2
+;  MOS_STRING_ISPREFIX() - determines if str1 is a prefix of str2
 ;  IN: SI = str1, DI = str2
 ;  OUT: Carry Flag set if true
 ;-------------------------------------------------------------------------
@@ -33,7 +33,7 @@ MOS_STRING_ISPREFIX:
 			RET						; return
 
 ;-------------------------------------------------------------------------
-;  MOS_STRING_LEN() returns the length of a string
+;  MOS_STRING_LEN() - returns the length of a string
 ;  IN: SI = string
 ;  OUT: DX = length
 ;-------------------------------------------------------------------------
@@ -46,6 +46,27 @@ MOS_STRING_LEN:
 			INC		SI				; move to next character
 			JMP		.COUNT			; loop
 .DONE:		RET						; return
+
+;-------------------------------------------------------------------------
+;  MOS_STRING_TOUPPER() - converts a full string to uppercase
+;  IN \ OUT: SI = string to modify
+;-------------------------------------------------------------------------
+
+MOS_STRING_TOUPPER:
+			PUSHA					; preserve registers
+.DO:		CMP		BYTE [SI], 0	; end of string?	
+			JE		.DONE			; if so, return
+			CMP		BYTE [SI], 'a'  ; is it within a-z range?
+			JB		.NALPHA			; if not, skip
+			CMP		BYTE [SI], 'z'  ; check for a-z range again
+			JA		.NALPHA			; and skip
+			SUB		BYTE [SI], 20h	; add 20h to ascii code, uppercase
+			INC		SI				; increment by 1
+			JMP		.DO				; read next character
+.NALPHA:	INC		SI				; skip non a-z
+			JMP		.DO				; loop
+.DONE:		POPA					; restore registers
+			RET						; return
 
 ;-------------------------------------------------------------------------
 ;  End Of File
