@@ -7,6 +7,7 @@ jmp START
 %INCLUDE "lib/string.asm"
 
 START:			
+				MOV		DL, 00000001b
 				MOV		DI, STR
 				CALL	MOS_IO_READ_STRING
 				MOV		SI, STR
