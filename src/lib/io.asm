@@ -43,7 +43,7 @@ MOS_IO_PRINT_STRING:
 ;-------------------------------------------------------------------------
 ;  MOS_IO_READ_STRING() - Reads a string from input
 ;  IN: DI = destination of input string
-;      DH = max buffer length, 
+;      DH = max buffer length (default value 254 if DH = 0)
 ;      DL = options flag: 0000000x = echo
 ;                         xxxxxxx0 = unused
 ;  OUT: DI = modified string from input
@@ -66,8 +66,8 @@ MOS_IO_READ_STRING:
 .ECHO:		CALL	MOS_IO_PRINT_CHAR	; call API routine to echo
 .NOECHO:	CMP		AL, 0Dh				; end of string? (enter pressed)
 			JNE		.READ				; if not, read more
-.DONE:		DEC		DI					; if so, set us back one
-			MOV		[DI], BYTE 0		; terminate our string asciiz
+			DEC		DI					; if so, set us back one
+.DONE:		MOV		[DI], BYTE 0		; terminate our string asciiz
 			RET							; return
 
 ;-------------------------------------------------------------------------
