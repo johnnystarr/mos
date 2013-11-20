@@ -8,8 +8,8 @@ jmp START
 %INCLUDE "lib/io.asm"
 %INCLUDE "lib/string.asm"
 
-START:			
-			MOV		DL, 00000001b
+START:		MOV		DH, 0
+			MOV		DL, 00000000b
 			MOV		DI, STR
 			CALL	MOS_IO_READ_STRING
 			MOV		SI, STR

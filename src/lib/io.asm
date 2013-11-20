@@ -43,23 +43,30 @@ MOS_IO_PRINT_STRING:
 ;-------------------------------------------------------------------------
 ;  MOS_IO_READ_STRING() - Reads a string from input
 ;  IN: DI = destination of input string
+;      DH = max buffer length, 
 ;      DL = options flag: 0000000x = echo
-;                         xxxxxxx0 = unused yet
-;  OUT: AL = char input
-;  TODO: complete by reading whole string  and returning pointer to str
+;                         xxxxxxx0 = unused
+;  OUT: DI = modified string from input
 ;-------------------------------------------------------------------------
 
 MOS_IO_READ_STRING:
-.READ		MOV		AH, 00h				; setup for read keyboard input
+			CMP		DH, 0				; is DH unitialized?
+			JE		.SETBUF				; if not, lets set the limit
+			JMP		.READ				; if is, start reading
+.SETBUF:	MOV		DH, 254				; set limit to 254+'\0' = 0-255
+.READ:		CMP		DH, 0				; check buffer boundry
+			JE		.DONE				; finish up if we hit our max
+			DEC		DH					; decrement our buffer counter
+			MOV		AH, 00h				; setup for read keyboard input
 			INT		16h					; call BIOS keyboard service
 			STOSB						; store AL in str, inc DI
 			TEST	DL, 00000001b   	; check echo flag
 			JNE		.ECHO				; go to echo stage
 			JMP		.NOECHO				; bypass echo
-.ECHO		CALL	MOS_IO_PRINT_CHAR	; call API routine to echo
-.NOECHO		CMP		AL, 0Dh				; end of string? (enter pressed)
+.ECHO:		CALL	MOS_IO_PRINT_CHAR	; call API routine to echo
+.NOECHO:	CMP		AL, 0Dh				; end of string? (enter pressed)
 			JNE		.READ				; if not, read more
-			DEC		DI					; if so, set us back one
+.DONE:		DEC		DI					; if so, set us back one
 			MOV		[DI], BYTE 0		; terminate our string asciiz
 			RET							; return
 
