@@ -3,6 +3,8 @@ BITS 16
 
 org 100h
 
+
+
 jmp START
 
 %INCLUDE "lib/io.asm"
@@ -16,4 +18,6 @@ START:		MOV		DH, 10
 			CALL	MOS_STRING_TOLOWER
 			CALL	MOS_IO_PRINT_STRING
 			RET
-STR: db 0
+			
+
+STR: 		TIMES	255 DB 0
