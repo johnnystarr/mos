@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nasm -f bin -o scaf.com lib-scaffold.asm
+nasm -f bin -o s.com lib-scaffold.asm

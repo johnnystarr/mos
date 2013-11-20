@@ -60,10 +60,31 @@ MOS_STRING_TOUPPER:
 			JB		.NALPHA			; if not, skip
 			CMP		BYTE [SI], 'z'  ; check for a-z range again
 			JA		.NALPHA			; and skip
-			SUB		BYTE [SI], 20h	; add 20h to ascii code, uppercase
+			SUB		BYTE [SI], 20h	; sub 20h to ascii code, uppercase
 			INC		SI				; increment by 1
 			JMP		.DO				; read next character
 .NALPHA:	INC		SI				; skip non a-z
+			JMP		.DO				; loop
+.DONE:		POPA					; restore registers
+			RET						; return
+
+;-------------------------------------------------------------------------
+;  MOS_STRING_TOLOWER() - converts a full string to lowercase
+;  IN \ OUT: SI = string to modify
+;-------------------------------------------------------------------------
+
+MOS_STRING_TOLOWER:
+			PUSHA					; preserve registers
+.DO:		CMP		BYTE [SI], 0	; end of string?	
+			JE		.DONE			; if so, return
+			CMP		BYTE [SI], 'A'  ; is it within A-Z range?
+			JB		.NALPHA			; if not, skip
+			CMP		BYTE [SI], 'Z'  ; check for A-Z range again
+			JA		.NALPHA			; and skip
+			ADD		BYTE [SI], 20h	; add 20h to ascii code, lowercase
+			INC		SI				; increment by 1
+			JMP		.DO				; read next character
+.NALPHA:	INC		SI				; skip non A-Z
 			JMP		.DO				; loop
 .DONE:		POPA					; restore registers
 			RET						; return
