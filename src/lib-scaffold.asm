@@ -1,4 +1,6 @@
 
+BITS 16
+
 org 100h
 
 jmp START
