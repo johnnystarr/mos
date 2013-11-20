@@ -15,22 +15,22 @@
 ;-------------------------------------------------------------------------
 
 MOS_STRING_ISPREFIX:
-				PUSHA					; preserve registers
-.MORE:			MOV 	AL, [SI]		; grab char from str1
-				MOV 	BL, [DI]		; grab char from str2
-				CMP 	AL, BL			; compare the two
-				JNE 	.NOT			; does it match?
-				INC 	SI				; increment str1
-				INC 	DI				; increment str2
-				CMP 	[SI], BYTE 0	; are we at the end of str1?
-				JNE 	.MORE			; loop
-				JMP 	.IS				; it is a prefix
-.NOT:			CLC						; clear carry flag (false)
-				POPA					; restore registers
-				RET						; return
-.IS:			STC						; set carry flag (true)
-				POPA					; restore registers
-				RET						; return
+			PUSHA					; preserve registers
+.MORE:		MOV 	AL, [SI]		; grab char from str1
+			MOV 	BL, [DI]		; grab char from str2
+			CMP 	AL, BL			; compare the two
+			JNE 	.NOT			; does it match?
+			INC 	SI				; increment str1
+			INC 	DI				; increment str2
+			CMP 	[SI], BYTE 0	; are we at the end of str1?
+			JNE 	.MORE			; loop
+			JMP 	.IS				; it is a prefix
+.NOT:		CLC						; clear carry flag (false)
+			POPA					; restore registers
+			RET						; return
+.IS:		STC						; set carry flag (true)
+			POPA					; restore registers
+			RET						; return
 
 ;-------------------------------------------------------------------------
 ;  MOS_STRING_LEN() returns the length of a string
@@ -39,13 +39,13 @@ MOS_STRING_ISPREFIX:
 ;-------------------------------------------------------------------------
 
 MOS_STRING_LEN:		
-				MOV		DX, 0			; start off count at 0
-.COUNT:			CMP		[SI], BYTE 0	; at the end of the string?
-				JE		.DONE			; if so, were done here
-				INC		DX				; otherwise: increment our count
-				INC		SI				; move to next character
-				JMP		.COUNT			; loop
-.DONE:			RET						; return
+			MOV		DX, 0			; start off count at 0
+.COUNT:		CMP		[SI], BYTE 0	; at the end of the string?
+			JE		.DONE			; if so, were done here
+			INC		DX				; otherwise: increment our count
+			INC		SI				; move to next character
+			JMP		.COUNT			; loop
+.DONE:		RET						; return
 
 ;-------------------------------------------------------------------------
 ;  End Of File
