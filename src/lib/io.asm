@@ -25,6 +25,7 @@ MOS_IO_PRINT_CHAR:
 ;-------------------------------------------------------------------------
 ;  MOS_IO_PRINT_STRING() - Prints a string to output
 ;  IN: SI = String to output
+;      DL = options flag: 0000000x = no carriage return
 ;  OUT: none
 ;  TODO: add features for pages and colors
 ;-------------------------------------------------------------------------
@@ -37,7 +38,13 @@ MOS_IO_PRINT_STRING:
 			MOV		AH, 0Eh      	; BIOS (output char) Int
 			INT		10h          	; call BIOS Int
 			JMP		.DO          	; loop
-.DONE:		POPA             		; restore regs, no output
+.DONE:		TEST	DL, 00000001b	; check no carriage return flag
+			JNE		.NC				; if checked, goto NC (no carriage)
+			MOV		AL, 0Dh			; carriage return
+			INT		10h				; output carriage return
+			MOV		AL, 0Ah			; new line
+			INT		10h				; output new line
+.NC:		POPA             		; restore regs, no output
 			RET              		; return
 
 ;-------------------------------------------------------------------------
