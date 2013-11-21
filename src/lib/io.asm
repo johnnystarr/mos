@@ -39,7 +39,11 @@ MOS_IO_PRINT_STRING:
 			JMP		.DO          	; loop
 .DONE:		TEST	DL, 00000001b	; check no carriage return flag
 			JNE		.NC				; if checked, goto NC (no carriage)
-			CALL	MOS_IO_NEW_LINE ; send new line to output
+			MOV		AH, 0Eh			; setup AH for BIOS output char
+			MOV		AL, 0Dh			; carriage return
+			INT		10h				; output carriage return
+			MOV		AL, 0Ah			; new line
+			INT		10h				; output new line	
 .NC:		POPA             		; restore regs, no output
 			RET              		; return
 
@@ -64,7 +68,11 @@ MOS_IO_PRINT_STRING_C:
 			MOV     CX, 1			; number of times to print character
 			INT     10h				; call BIOS
 			JMP     .DO				; loop
-.DONE:      CALL	MOS_IO_NEW_LINE	; send new line to output
+.DONE:      MOV		AH, 0Eh			; setup AH for BIOS output char
+			MOV		AL, 0Dh			; carriage return
+			INT		10h				; output carriage return
+			MOV		AL, 0Ah			; new line
+			INT		10h				; output new line	
 			POPA					; restore registers
             RET						; return
 
@@ -75,10 +83,11 @@ MOS_IO_PRINT_STRING_C:
 MOS_IO_NEW_LINE:
 			PUSH	AX				; preserve AX
 			MOV		AH, 0Eh			; setup AH for BIOS output char
-			MOV		AL, 0Dh			; carriage return
+.DO:		MOV		AL, 0Dh			; carriage return
 			INT		10h				; output carriage return
 			MOV		AL, 0Ah			; new line
 			INT		10h				; output new line	
+			LOOP	.DO				; repeat number of CX times
 			POP		AX				; restore AX
 			RET			
 			

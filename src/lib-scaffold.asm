@@ -24,14 +24,13 @@ START:
 			MOV		SI, STR
 			CALL	MOS_IO_PRINT_STRING_C
 			
+			MOV		CX, 2
+			CALL	MOS_IO_NEW_LINE
+			
 			MOV		BL, 0x2D
 			
 			MOV		SI, STR2
 			CALL	MOS_IO_PRINT_STRING_C
-			
-			
-			MOV		SI, STR
-			CALL	MOS_IO_PRINT_STRING
 			
 			RET
 			
