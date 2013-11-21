@@ -27,7 +27,6 @@ MOS_IO_PRINT_CHAR:
 ;  IN: SI = String to output
 ;      DL = options flag: 0000000x = no carriage return
 ;  OUT: none
-;  TODO: add features for pages and colors
 ;-------------------------------------------------------------------------
 
 MOS_IO_PRINT_STRING:
@@ -40,13 +39,49 @@ MOS_IO_PRINT_STRING:
 			JMP		.DO          	; loop
 .DONE:		TEST	DL, 00000001b	; check no carriage return flag
 			JNE		.NC				; if checked, goto NC (no carriage)
-			MOV		AL, 0Dh			; carriage return
-			INT		10h				; output carriage return
-			MOV		AL, 0Ah			; new line
-			INT		10h				; output new line
+			CALL	MOS_IO_NEW_LINE ; send new line to output
 .NC:		POPA             		; restore regs, no output
 			RET              		; return
 
+;-------------------------------------------------------------------------
+;  MOS_IO_PRINT_STRING_C() - Prints a string to output (in color!)
+;  IN: SI = String to output, BL = color: left nib = bg, right nib = fg
+;  OUT: none
+;-------------------------------------------------------------------------
+
+MOS_IO_PRINT_STRING_C:
+			PUSHA					; preserve registers
+			MOV     AH, 03h			; get current location of cursor
+			INT     10h				; call BIOS 
+.DO:		LODSB					; load the next char from our string
+			CMP     AL, 0			; at the end of our string?
+			JE      .DONE			; if so, leave        
+			MOV     AH, 02h			; set cursor pos: whatever is set
+			INT     10h				; call BIOS
+			INC     DL				; increase cursor horiz pos
+			MOV     AH, 09h			; output char with attributes
+			MOV     BH, 0			; set page to write to
+			MOV     CX, 1			; number of times to print character
+			INT     10h				; call BIOS
+			JMP     .DO				; loop
+.DONE:      CALL	MOS_IO_NEW_LINE	; send new line to output
+			POPA					; restore registers
+            RET						; return
+
+;-------------------------------------------------------------------------
+;  MOS_IO_NEW_LINE() - outputs a carriage return and new line
+;  IN / OUT: none
+;-------------------------------------------------------------------------
+MOS_IO_NEW_LINE:
+			PUSH	AX				; preserve AX
+			MOV		AH, 0Eh			; setup AH for BIOS output char
+			MOV		AL, 0Dh			; carriage return
+			INT		10h				; output carriage return
+			MOV		AL, 0Ah			; new line
+			INT		10h				; output new line	
+			POP		AX				; restore AX
+			RET			
+			
 ;-------------------------------------------------------------------------
 ;  MOS_IO_READ_STRING() - Reads a string from input
 ;  IN: DI = destination of input string
