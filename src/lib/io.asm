@@ -54,27 +54,27 @@ MOS_IO_PRINT_STRING:
 ;-------------------------------------------------------------------------
 
 MOS_IO_PRINT_STRING_C:
-			PUSHA					; preserve registers
-			MOV     AH, 03h			; get current location of cursor
-			INT     10h				; call BIOS 
-.DO:		LODSB					; load the next char from our string
-			CMP     AL, 0			; at the end of our string?
-			JE      .DONE			; if so, leave        
-			MOV     AH, 02h			; set cursor pos: whatever is set
-			INT     10h				; call BIOS
-			INC     DL				; increase cursor horiz pos
-			MOV     AH, 09h			; output char with attributes
-			MOV     BH, 0			; set page to write to
-			MOV     CX, 1			; number of times to print character
-			INT     10h				; call BIOS
-			JMP     .DO				; loop
-.DONE:      MOV		AH, 0Eh			; setup AH for BIOS output char
-			MOV		AL, 0Dh			; carriage return
-			INT		10h				; output carriage return
-			MOV		AL, 0Ah			; new line
-			INT		10h				; output new line	
-			POPA					; restore registers
-            RET						; return
+            PUSHA                   ; preserve registers
+            MOV     AH, 03h         ; get current location of cursor
+            INT     10h             ; call BIOS 
+.DO:        LODSB                   ; load the next char from our string
+            CMP     AL, 0           ; at the end of our string?
+            JE      .DONE           ; if so, leave        
+            MOV     AH, 02h         ; set cursor pos: whatever is set
+            INT     10h             ; call BIOS
+            INC     DL              ; increase cursor horiz pos
+            MOV     AH, 09h         ; output char with attributes
+            MOV     BH, 0           ; set page to write to
+            MOV     CX, 1           ; number of times to print character
+            INT     10h             ; call BIOS
+            JMP     .DO             ; loop
+.DONE:      MOV     AH, 0Eh         ; setup AH for BIOS output char
+            MOV     AL, 0Dh         ; carriage return
+            INT     10h             ; output carriage return
+            MOV     AL, 0Ah         ; new line
+            INT     10h             ; output new line	
+            POPA                    ; restore registers
+            RET                     ; return
 
 ;-------------------------------------------------------------------------
 ;  MOS_IO_NEW_LINE() - outputs a carriage return and new line
