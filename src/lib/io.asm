@@ -78,9 +78,11 @@ MOS_IO_PRINT_STRING_C:
 
 ;-------------------------------------------------------------------------
 ;  MOS_IO_NEW_LINE() - outputs a carriage return and new line
-;  IN / OUT: none
+;  IN: CX = number of times to repeat, must be set to a minimum of 1
 ;-------------------------------------------------------------------------
 MOS_IO_NEW_LINE:
+			CMP		CX, 0			; first check if CX is set
+			JE		.DONE			; if not, get outta here
 			PUSH	AX				; preserve AX
 			MOV		AH, 0Eh			; setup AH for BIOS output char
 .DO:		MOV		AL, 0Dh			; carriage return
@@ -89,7 +91,7 @@ MOS_IO_NEW_LINE:
 			INT		10h				; output new line	
 			LOOP	.DO				; repeat number of CX times
 			POP		AX				; restore AX
-			RET			
+.DONE:		RET						; return, and leave if CX not set
 			
 ;-------------------------------------------------------------------------
 ;  MOS_IO_READ_STRING() - Reads a string from input
