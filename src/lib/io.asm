@@ -18,10 +18,10 @@
 ;-------------------------------------------------------------------------
 
 MOS_IO_PRINT_CHAR:
-			MOV		AH, 0Eh			; BIOS (output char) Int
-			INT		10h				; call BIOS Int
-			RET
-			
+            MOV     AH, 0Eh         ; BIOS (output char) Int
+            INT     10h             ; call BIOS Int
+            RET
+
 ;-------------------------------------------------------------------------
 ;  MOS_IO_PRINT_STRING() - Prints a string to output
 ;  IN: SI = String to output
@@ -30,22 +30,22 @@ MOS_IO_PRINT_CHAR:
 ;-------------------------------------------------------------------------
 
 MOS_IO_PRINT_STRING:
-			PUSHA					; preserve registers
-.DO:		LODSB            		; loads next byte to AL, (INC SI)
-			CMP 	AL, 0			; at the end of our string?
-			JE		.DONE         	; if so, leave
-			MOV		AH, 0Eh      	; BIOS (output char) Int
-			INT		10h          	; call BIOS Int
-			JMP		.DO          	; loop
-.DONE:		TEST	DL, 00000001b	; check no carriage return flag
-			JNE		.NC				; if checked, goto NC (no carriage)
-			MOV		AH, 0Eh			; setup AH for BIOS output char
-			MOV		AL, 0Dh			; carriage return
-			INT		10h				; output carriage return
-			MOV		AL, 0Ah			; new line
-			INT		10h				; output new line	
-.NC:		POPA             		; restore regs, no output
-			RET              		; return
+            PUSHA                   ; preserve registers
+.DO:        LODSB                   ; loads next byte to AL, (INC SI)
+            CMP     AL, 0           ; at the end of our string?
+            JE      .DONE           ; if so, leave
+            MOV     AH, 0Eh         ; BIOS (output char) Int
+            INT     10h             ; call BIOS Int
+            JMP     .DO             ; loop
+.DONE:      TEST    DL, 00000001b   ; check no carriage return flag
+            JNE     .NC             ; if checked, goto NC (no carriage)
+            MOV     AH, 0Eh         ; setup AH for BIOS output char
+            MOV     AL, 0Dh         ; carriage return
+            INT     10h             ; output carriage return
+            MOV     AL, 0Ah         ; new line
+            INT     10h             ; output new line
+.NC:        POPA                    ; restore regs, no output
+            RET                     ; return
 
 ;-------------------------------------------------------------------------
 ;  MOS_IO_PRINT_STRING_C() - Prints a string to output (in color!)
@@ -81,18 +81,18 @@ MOS_IO_PRINT_STRING_C:
 ;  IN: CX = number of times to repeat, must be set to a minimum of 1
 ;-------------------------------------------------------------------------
 MOS_IO_NEW_LINE:
-			CMP		CX, 0			; first check if CX is set
-			JE		.DONE			; if not, get outta here
-			PUSH	AX				; preserve AX
-			MOV		AH, 0Eh			; setup AH for BIOS output char
-.DO:		MOV		AL, 0Dh			; carriage return
-			INT		10h				; output carriage return
-			MOV		AL, 0Ah			; new line
-			INT		10h				; output new line	
-			LOOP	.DO				; repeat number of CX times
-			POP		AX				; restore AX
-.DONE:		RET						; return, and leave if CX not set
-			
+            CMP     CX, 0           ; first check if CX is set
+            JE      .DONE           ; if not, get outta here
+            PUSH    AX              ; preserve AX
+            MOV     AH, 0Eh         ; setup AH for BIOS output char
+.DO:        MOV     AL, 0Dh         ; carriage return
+            INT     10h             ; output carriage return
+            MOV     AL, 0Ah         ; new line
+            INT     10h             ; output new line
+            LOOP    .DO             ; repeat number of CX times
+            POP     AX              ; restore AX
+.DONE:      RET                     ; return, and leave if CX not set
+
 ;-------------------------------------------------------------------------
 ;  MOS_IO_READ_STRING() - Reads a string from input
 ;  IN: DI = destination of input string
@@ -103,25 +103,25 @@ MOS_IO_NEW_LINE:
 ;-------------------------------------------------------------------------
 
 MOS_IO_READ_STRING:
-			CMP		DH, 0				; is DH unitialized?
-			JE		.SETBUF				; if not, lets set the limit
-			JMP		.READ				; if is, start reading
-.SETBUF:	MOV		DH, 254				; set limit to 254+'\0' = 0-255
-.READ:		CMP		DH, 0				; check buffer boundry
-			JE		.DONE				; finish up if we hit our max
-			DEC		DH					; decrement our buffer counter
-			MOV		AH, 00h				; setup for read keyboard input
-			INT		16h					; call BIOS keyboard service
-			STOSB						; store AL in str, inc DI
-			TEST	DL, 00000001b   	; check echo flag
-			JNE		.ECHO				; go to echo stage
-			JMP		.NOECHO				; bypass echo
-.ECHO:		CALL	MOS_IO_PRINT_CHAR	; call API routine to echo
-.NOECHO:	CMP		AL, 0Dh				; end of string? (enter pressed)
-			JNE		.READ				; if not, read more
-			DEC		DI					; if so, set us back one
-.DONE:		MOV		[DI], BYTE 0		; terminate our string asciiz
-			RET							; return
+            CMP     DH, 0               ; is DH unitialized?
+            JE      .SETBUF             ; if not, lets set the limit
+            JMP     .READ               ; if is, start reading
+.SETBUF:    MOV     DH, 254             ; set limit to 254+'\0' = 0-255
+.READ:      CMP     DH, 0               ; check buffer boundry
+            JE      .DONE               ; finish up if we hit our max
+            DEC     DH                  ; decrement our buffer counter
+            MOV     AH, 00h             ; setup for read keyboard input
+            INT     16h                 ; call BIOS keyboard service
+            STOSB                       ; store AL in str, inc DI
+            TEST    DL, 00000001b       ; check echo flag
+            JNE     .ECHO               ; go to echo stage
+            JMP     .NOECHO             ; bypass echo
+.ECHO:      CALL    MOS_IO_PRINT_CHAR   ; call API routine to echo
+.NOECHO:    CMP     AL, 0Dh             ; end of string? (enter pressed)
+            JNE     .READ               ; if not, read more
+            DEC     DI                  ; if so, set us back one
+.DONE:      MOV     [DI], BYTE 0        ; terminate our string asciiz
+            RET                         ; return
 
 ;-------------------------------------------------------------------------
 ;  End Of File

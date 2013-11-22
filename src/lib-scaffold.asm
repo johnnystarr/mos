@@ -10,16 +10,16 @@ jmp START
 ;-------------------------------------------------------------------------
 
 START:
-			MOV		AX, 0x0D		; AH: 00, AL: 0D = EGA 16 COLOR
-			INT		10h				; call BIOS video mode
-			MOV		AH, 0Bh
-			MOV		BX, 00
-			INT		10h
-			MOV		CX, 0x0F
-.DO:		MOV		BX, CX
-			MOV		SI, STR
-			CALL	MOS_IO_PRINT_STRING_C
-			LOOP	.DO
-			RET
-			
-STR: 		DB "Give life back to music!", 0
+            MOV     AX, 0x0D        ; AH: 00, AL: 0D = EGA 16 COLOR
+            INT     10h             ; call BIOS video mode
+            MOV     AH, 0Bh
+            MOV     BX, 00
+            INT     10h
+            MOV     CX, 0x0F
+.DO:        MOV     BX, CX
+            MOV     SI, STR
+            CALL    MOS_IO_PRINT_STRING_C
+            LOOP    .DO
+            RET
+
+STR:        DB "Give life back to music!", 0
